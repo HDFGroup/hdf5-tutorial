@@ -13,10 +13,48 @@ int main() {
     double mu = 0.0;       // long-term mean of the process
     double sigma = 0.1;    // volatility of the process
 
+    std::map<std::string, std::string> args; // create a map to store user inputs 
+
+    for (int i = 1; i < argc; i++) {
+        std:string arg = argv[i];
+        size_t pos = arg.find('=');
+        if (pos == std::string::npos) {
+            continue;
+        }
+        std::string key = arg.substr(0, pos);
+        std::string value = arg.substr(pos + 1);
+        args[key] = value;
+    }
+
+    /* Check if any of the inputs need to be changed. */
+    if (args.cout("paths")) {
+        paths = std::stoi(args["paths"]);
+    }
+
+    if (args.cout("steps")) {
+        steps = std::stoi(args["steps"]);
+    }
+
+    if (args.cout("dt")) {
+        dt = std::stod(args["dt"]);
+    }
+
+    if (args.cout("theta")) {
+        theta = std::stod(args["theta"]);
+    }
+    
+    if (args.cout("mu")) {
+        mu = std::stod(args["mu"]);
+    }
+
+    if (args.cout("sigma")) {
+        sigma = std::stod(args["sigma"]);
+    }
+ 
+    // Populate a vector according to the OU process
     std::random_device rd;
     std::mt19937 generator(rd());
     std::normal_distribution<double> dist(0.0, std::sqrt(dt));
-    
     std::vector<std::vector<double>> ou_process(paths, std::vector<double>(steps));
     
     for(int i = 0; i < paths; ++i)
@@ -36,6 +74,9 @@ int main() {
     hid_t atype;      /* string type*/
     hsize_t dimsf[2];            /* dataset dimensions */
     hsize_t adim[] = {1, 1, 1};  /* dimensions for attribute matrix */
+    
+    double mu_mat[1][1][1];
+    std::string mu_str;
 
     /* Initialize the dimension array. */
     dimsf[0] = paths;
@@ -65,7 +106,7 @@ int main() {
     theta_attr = H5Acreate2(file, "theta", H5T_NATIVE_FLOAT, theta_attr_space, H5P_DEFAULT, H5P_DEFAULT);
     H5Awrite(theta_attr, H5T_NATIVE_FLOAT, &f_theta);
 
-    std::string mu_str = std::to_string(mu);
+    mu_str = std::to_string(mu);
     mu_attr_space = H5Screate(H5S_SCALAR);
     atype = H5Tcopy(H5T_C_S1);
     H5Tset_size(atype, mu_str.length());
@@ -73,7 +114,6 @@ int main() {
     mu_attr = H5Acreate2(file, "mu", atype, mu_attr_space, H5P_DEFAULT, H5P_DEFAULT);
     H5Awrite(mu_attr, atype, mu_str.c_str());
 
-    double mu_mat[1][1][1];
     mu_mat[0][0][0] = sigma;
     sigma_attr_space = H5Screate(H5S_SIMPLE);
     H5Sset_extent_simple(sigma_attr_space, 3, adim, NULL);
