@@ -31,7 +31,11 @@ int main() {
 
     // Write the paths to an HDF5 file using HDF5 C-API
     hid_t file, dataset, space;  /* handles */
+    hid_t dt_attr_space, theta_attr_space, mu_attr_space, sigma_attr_space; /* attribute dataspace handles */
+    hid_t dt_attr, theta_attr, mu_attr, sigma_attr; /* attribute handles */
+    hid_t atype;      /* string type*/
     hsize_t dimsf[2];            /* dataset dimensions */
+    hsize_t adim[] = {1, 1, 1};  /* dimensions for attribute matrix */
 
     /* Initialize the dimension array. */
     dimsf[0] = paths;
@@ -50,6 +54,44 @@ int main() {
 
     /* Write the dataset. */
     H5Dwrite(dataset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ou_process.data());
+
+    /* Creat attribute for dt, theta, mu, sigma using differing types. */
+    dt_attr_space = H5Screate(H5S_SCALAR);
+    dt_attr = H5Acreate2(file, "dt", H5T_NATIVE_DOUBLE, dt_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+    H5Awrite(dt_attr, H5T_NATIVE_DOUBLE, &dt);
+
+    float f_theta = (float) theta;
+    theta_attr_space = H5Screate(H5S_SCALAR);
+    theta_attr = H5Acreate2(file, "theta", H5T_NATIVE_FLOAT, theta_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+    H5Awrite(theta_attr, H5T_NATIVE_FLOAT, &f_theta);
+
+    std::string mu_str = std::to_string(mu);
+    mu_attr_space = H5Screate(H5S_SCALAR);
+    atype = H5Tcopy(H5T_C_S1);
+    H5Tset_size(atype, mu_str.length());
+    H5Tset_cset(datatype_id, H5T_CSET_UTF8);
+    mu_attr = H5Acreate2(file, "mu" atype, mu_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+    H5Awrite(mu_attr, atype, mu_str.c_str());
+
+    double mu_mat[1][1][1];
+    mu_mat[0][0][0] = sigma;
+    sigma_attr_space = H5Screate(H5S_SIMPLE);
+    H5Sset_extent_simple(sigma_attr_space, 3, adim, NULL);
+    sigma_attr = H5Acreate2(file, "sigma" H5T_NATIVE_DOUBLE, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+    H5Awrite(sigma_attr, H5T_NATIVE_DOUBLE, mu_mat);
+
+    /* Close attributes. */
+    H5Aclose(dt_attr);
+    H5Aclose(theta_attr);
+    H5Aclose(mu_attr);
+    H5Aclose(sigma_attr);
+
+    /* Close attribute and file dataspaces. */
+    H5Sclose(dt_attr_space);
+    H5Sclose(theta_attr_space);
+    H5Sclose(mu_attr_space);
+    H5Sclose(sigma_attr_space);
+    H5Tclose(atype);
 
     /* Close the dataset. */
     H5Dclose(dataset);
