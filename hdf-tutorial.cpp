@@ -1,11 +1,12 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <map>
 #include <hdf5.h>
 
 using namespace std;
 
-int main() {
+int main(int argc, char *argv[]) {
     int paths = 100;       // number of paths
     int steps = 1000;      // number of steps
     double dt = 0.01;      // time increment
@@ -27,27 +28,27 @@ int main() {
     }
 
     /* Check if any of the inputs need to be changed. */
-    if (args.cout("paths")) {
+    if (args.count("paths")) {
         paths = std::stoi(args["paths"]);
     }
 
-    if (args.cout("steps")) {
+    if (args.count("steps")) {
         steps = std::stoi(args["steps"]);
     }
 
-    if (args.cout("dt")) {
+    if (args.count("dt")) {
         dt = std::stod(args["dt"]);
     }
 
-    if (args.cout("theta")) {
+    if (args.count("theta")) {
         theta = std::stod(args["theta"]);
     }
     
-    if (args.cout("mu")) {
+    if (args.count("mu")) {
         mu = std::stod(args["mu"]);
     }
 
-    if (args.cout("sigma")) {
+    if (args.count("sigma")) {
         sigma = std::stod(args["sigma"]);
     }
  
