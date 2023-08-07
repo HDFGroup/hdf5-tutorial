@@ -14,49 +14,49 @@ int main(int argc, char *argv[]) {
     double mu = 0.0;       // long-term mean of the process
     double sigma = 0.1;    // volatility of the process
 
-    std::map<std::string, std::string> args; // create a map to store user inputs 
+    map<string, string> args; // create a map to store user inputs 
 
     for (int i = 1; i < argc; i++) {
-        std:string arg = argv[i];
+        string arg = argv[i];
         size_t pos = arg.find('=');
-        if (pos == std::string::npos) {
+        if (pos == string::npos) {
             continue;
         }
-        std::string key = arg.substr(0, pos);
-        std::string value = arg.substr(pos + 1);
+        string key = arg.substr(0, pos);
+        string value = arg.substr(pos + 1);
         args[key] = value;
     }
 
     /* Check if any of the inputs need to be changed. */
     if (args.count("paths")) {
-        paths = std::stoi(args["paths"]);
+        paths = stoi(args["paths"]);
     }
 
     if (args.count("steps")) {
-        steps = std::stoi(args["steps"]);
+        steps = stoi(args["steps"]);
     }
 
     if (args.count("dt")) {
-        dt = std::stod(args["dt"]);
+        dt = stod(args["dt"]);
     }
 
     if (args.count("theta")) {
-        theta = std::stod(args["theta"]);
+        theta = stod(args["theta"]);
     }
     
     if (args.count("mu")) {
-        mu = std::stod(args["mu"]);
+        mu = stod(args["mu"]);
     }
 
     if (args.count("sigma")) {
-        sigma = std::stod(args["sigma"]);
+        sigma = stod(args["sigma"]);
     }
  
     // Populate a vector according to the OU process
-    std::random_device rd;
-    std::mt19937 generator(rd());
-    std::normal_distribution<double> dist(0.0, std::sqrt(dt));
-    std::vector<std::vector<double>> ou_process(paths, std::vector<double>(steps));
+    random_device rd;
+    mt19937 generator(rd());
+    normal_distribution<double> dist(0.0, sqrt(dt));
+    vector<vector<double>> ou_process(paths, vector<double>(steps));
     
     for(int i = 0; i < paths; ++i)
     {
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     hsize_t adim[] = {1, 1, 1};  /* dimensions for attribute matrix */
     
     double mu_mat[1][1][1];
-    std::string mu_str;
+    string mu_str;
 
     /* Initialize the dimension array. */
     dimsf[0] = paths;
