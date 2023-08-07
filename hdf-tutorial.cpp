@@ -69,15 +69,15 @@ int main() {
     mu_attr_space = H5Screate(H5S_SCALAR);
     atype = H5Tcopy(H5T_C_S1);
     H5Tset_size(atype, mu_str.length());
-    H5Tset_cset(datatype_id, H5T_CSET_UTF8);
-    mu_attr = H5Acreate2(file, "mu" atype, mu_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+    H5Tset_cset(atype, H5T_CSET_UTF8);
+    mu_attr = H5Acreate2(file, "mu", atype, mu_attr_space, H5P_DEFAULT, H5P_DEFAULT);
     H5Awrite(mu_attr, atype, mu_str.c_str());
 
     double mu_mat[1][1][1];
     mu_mat[0][0][0] = sigma;
     sigma_attr_space = H5Screate(H5S_SIMPLE);
     H5Sset_extent_simple(sigma_attr_space, 3, adim, NULL);
-    sigma_attr = H5Acreate2(file, "sigma" H5T_NATIVE_DOUBLE, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+    sigma_attr = H5Acreate2(file, "sigma", H5T_NATIVE_DOUBLE, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT);
     H5Awrite(sigma_attr, H5T_NATIVE_DOUBLE, mu_mat);
 
     /* Close attributes. */
