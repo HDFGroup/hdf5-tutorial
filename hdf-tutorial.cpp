@@ -52,18 +52,18 @@ int main(int argc, char *argv[]) {
         sigma = stod(args["sigma"]);
     }
  
-    /* Populate a vector according to the Ornstein-Uhlenbeck process */
+    /* Populate an array according to the Ornstein-Uhlenbeck process */
     random_device rd;
     mt19937 generator(rd());
     normal_distribution<double> dist(0.0, sqrt(dt));
-    vector<vector<double>> ou_process(paths, vector<double>(steps));
+    double* ou_process = new double[paths * steps];
     
     for(int i = 0; i < paths; ++i) {
-        ou_process[i][0] = 0.0;   /* Start at x = 0 */
+        *(ou_process + i * steps) = 0;   /* Start at x = 0 */
         for(int j = 1; j < steps; ++j)
         {
             double dW = dist(generator); 
-            ou_process[i][j] = ou_process[i][j-1] + theta * (mu - ou_process[i][j-1]) * dt + sigma * dW;
+            *(ou_process + i * steps + j) = *(ou_process + i * steps + j - 1) + theta * (mu - *(ou_process + i * steps + j - 1)) * dt + sigma * dW;
         }
     }
 
