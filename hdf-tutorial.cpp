@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
     H5Sclose(space);
 
     /* Write the dataset */
-    H5Dwrite(dataset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ou_process.data());
+    H5Dwrite(dataset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ou_process);
 
     /* Attributes can be any type, whether it be user defined, native, or even an array */
     /* Create attribute for dt, theta, mu, sigma using different types of attributes */
