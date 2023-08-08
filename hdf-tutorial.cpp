@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     double mu = 0.0;       /* Long-term mean of the process */
     double sigma = 0.1;    /* Volatility of the process */
 
-    map<string, string> args; /* Create a map to store user inputs */
+    map<string, string> args; /* Create a map to store user inputs using the format key=value */
 
     for (int i = 1; i < argc; i++) {
         string arg = argv[i];
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
         args[key] = value;
     }
 
-    /* Check if any of the user's inputs need to be used against map. */
+    /* Check if any of the user's inputs should be used over the defaults */
     if (args.count("paths")) {
         paths = stoi(args["paths"]);
     }
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     normal_distribution<double> dist(0.0, sqrt(dt));
     double* ou_process = new double[paths * steps];
     
-    for(int i = 0; i < paths; ++i) {
+    for (int i = 0; i < paths; ++i) {
         *(ou_process + i * steps) = 0;   /* Start at x = 0 */
         for(int j = 1; j < steps; ++j)
         {
@@ -73,9 +73,9 @@ int main(int argc, char *argv[]) {
     hid_t dt_attr, theta_attr, mu_attr, sigma_attr; /* Attribute handles */
     hid_t atype;      /* String type */
     hsize_t dimsf[2];            /* Dataset dimensions */
-    hsize_t adim[] = {1, 1, 1};  /* Dimensions for attribute matrix */
+    hsize_t adim[] = {1, 1, 1};  /* Dimensions for the array attribute */
     
-    double mu_mat[1][1][1];     /* Declaration of matrix attribute */
+    double mu_mat[1][1][1];     /* Declaration of array attribute */
     string mu_str;    /* Declaration of string attribute */
 
     /* Initialize the dimension array */
@@ -88,16 +88,17 @@ int main(int argc, char *argv[]) {
     /* Create the dataspace for the dataset */
     space = H5Screate_simple(2, dimsf, NULL);
 
-    /* Create the dataset with default properties and close dataspace */
+    /* Create the dataset with default properties */
     dataset = H5Dcreate(file, "/dataset", H5T_NATIVE_DOUBLE, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
+    /* Close the dataspace */
     H5Sclose(space);
 
     /* Write the dataset */
     H5Dwrite(dataset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ou_process);
-
-    /* Attributes can be any type, whether it be user defined, native, or even an array */
+    
     /* Create attribute for dt, theta, mu, sigma using different types of attributes */
+    /* Attributes can be any type, whether it be user-defined, native, or even a n-dimensional array */
     dt_attr_space = H5Screate(H5S_SCALAR); /* Create the dataspace for the attribute*/
     dt_attr = H5Acreate2(file, "dt", H5T_NATIVE_DOUBLE, dt_attr_space, H5P_DEFAULT, H5P_DEFAULT); /* Create a double attribute */
     H5Awrite(dt_attr, H5T_NATIVE_DOUBLE, &dt); /* Write the double attribute */
@@ -115,11 +116,11 @@ int main(int argc, char *argv[]) {
     mu_attr = H5Acreate2(file, "mu", atype, mu_attr_space, H5P_DEFAULT, H5P_DEFAULT); /* Create a string attribute */
     H5Awrite(mu_attr, atype, mu_str.c_str()); /* Write the string attribute */
 
-    mu_mat[0][0][0] = sigma; /* Write sigma to the example matrix */
+    mu_mat[0][0][0] = sigma; /* Write sigma to the example 3D array */
     sigma_attr_space = H5Screate(H5S_SIMPLE); /* Create the dataspace for the attribute*/
     H5Sset_extent_simple(sigma_attr_space, 3, adim, NULL); /* Set dataspace dimensions */
     sigma_attr = H5Acreate2(file, "sigma", H5T_NATIVE_DOUBLE, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT); /* Create matrix attribute */
-    H5Awrite(sigma_attr, H5T_NATIVE_DOUBLE, mu_mat); /* Write the matrix attribute */
+    H5Awrite(sigma_attr, H5T_NATIVE_DOUBLE, mu_mat); /* Write the 3D array attribute */
 
     /* Close attributes */
     H5Aclose(dt_attr);
