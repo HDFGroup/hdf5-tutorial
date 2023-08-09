@@ -1,25 +1,28 @@
+// Purpose: HDF5 tutorial for the HDF User Group 2023
+// Warning: This code is not meant to be used in production!
+
+#include <cassert>
 #include <iostream>
-#include <random>
-#include <vector>
 #include <map>
-#include <hdf5.h>
+#include <random>
+#include <string>
+#include <vector>
+
+#include "hdf5.h"
 
 using namespace std;
 
-int main(int argc, char *argv[]) {
-    int paths = 100;       /* Number of paths */
-    int steps = 1000;      /* Number of steps */
-    double dt = 0.01;      /* Time increment */
-    double theta = 1.0;    /* Rate of reversion to the mean */
-    double mu = 0.0;       /* Long-term mean of the process */
-    double sigma = 0.1;    /* Volatility of the process */
+int main(int argc, char *argv[])
+{
+    // Create a map to store user inputs using the format key=value
+    map<string, string> args;
 
-    map<string, string> args; /* Create a map to store user inputs using the format key=value */
-
-    for (int i = 1; i < argc; i++) {
+    for (auto i = 1; i < argc; i++)
+    {
         string arg = argv[i];
         size_t pos = arg.find('=');
-        if (pos == string::npos) {
+        if (pos == string::npos)
+        {
             continue;
         }
         string key = arg.substr(0, pos);
@@ -27,118 +30,143 @@ int main(int argc, char *argv[]) {
         args[key] = value;
     }
 
-    /* Check if any of the user's inputs should be used over the defaults */
-    if (args.count("paths")) {
-        paths = stoi(args["paths"]);
-    }
+    // Parameter defaults
+    size_t path_count = 100;
+    size_t step_count = 1000;
+    double dt = 0.01;   // time step
+    double theta = 1.0; // rate of reversion to the mean
+    double mu = 0.0;    // long-term mean of the process
+    double sigma = 0.1; // volatility of the process
 
-    if (args.count("steps")) {
-        steps = stoi(args["steps"]);
-    }
-
-    if (args.count("dt")) {
-        dt = stod(args["dt"]);
-    }
-
-    if (args.count("theta")) {
-        theta = stod(args["theta"]);
-    }
-    
-    if (args.count("mu")) {
-        mu = stod(args["mu"]);
-    }
-
-    if (args.count("sigma")) {
-        sigma = stod(args["sigma"]);
-    }
- 
-    /* Populate an array according to the Ornstein-Uhlenbeck process */
-    random_device rd;
-    mt19937 generator(rd());
-    normal_distribution<double> dist(0.0, sqrt(dt));
-    double* ou_process = new double[paths * steps];
-    
-    for (int i = 0; i < paths; ++i) {
-        *(ou_process + i * steps) = 0;   /* Start at x = 0 */
-        for(int j = 1; j < steps; ++j)
+    { // Parse user inputs
+        if (args.count("paths"))
         {
-            double dW = dist(generator); 
-            *(ou_process + i * steps + j) = *(ou_process + i * steps + j - 1) + theta * (mu - *(ou_process + i * steps + j - 1)) * dt + sigma * dW;
+            path_count = stoul(args["paths"]);
+            assert(path_count > 0);
+        }
+        if (args.count("steps"))
+        {
+            step_count = stoul(args["steps"]);
+            assert(step_count > 0);
+        }
+        if (args.count("dt"))
+        {
+            dt = stod(args["dt"]);
+            assert(dt > 0);
+        }
+        if (args.count("theta"))
+        {
+            theta = stod(args["theta"]);
+            assert(theta > 0);
+        }
+        if (args.count("mu"))
+        {
+            mu = stod(args["mu"]);
+        }
+        if (args.count("sigma"))
+        {
+            sigma = stod(args["sigma"]);
+            assert(sigma > 0);
         }
     }
 
-    /* Write the paths to an HDF5 file using the HDF5 C API */
-    hid_t file, dataset, space;  /* Handles */
-    hid_t dt_attr_space, theta_attr_space, mu_attr_space, sigma_attr_space; /* Attribute dataspace handles */
-    hid_t dt_attr, theta_attr, mu_attr, sigma_attr; /* Attribute handles */
-    hid_t atype;      /* String type */
-    hsize_t dimsf[2];            /* Dataset dimensions */
-    hsize_t adim[] = {1, 1, 1};  /* Dimensions for the array attribute */
+    cout << "Running with parameters:"
+         << " paths=" << path_count
+         << " steps=" << step_count
+         << " dt=" << dt
+         << " theta=" << theta
+         << " mu=" << mu
+         << " sigma=" << sigma << endl;
+
+    vector<double> ou_process(path_count * step_count);
+
+    { // Populate an array according to the Ornstein-Uhlenbeck process
+        random_device rd;
+        mt19937 generator(rd());
+        normal_distribution<double> dist(0.0, sqrt(dt));
+
+        for (auto i = 0; i < path_count; ++i)
+        {
+            ou_process[i * step_count] = 0; /* Start at x = 0 */
+            for (auto j = 1; j < step_count; ++j)
+            {
+                auto dW = dist(generator);
+                auto pos = i * step_count + j;
+                ou_process[pos] = ou_process[pos - 1] + theta * (mu - ou_process[pos - 1]) * dt + sigma * dW;
+            }
+        }
+    }
+
+    // Write the sample paths to an HDF5 file using the HDF5 C-API!
+    // There are fine HDF5 C++ APIs available, but this is not today's topic.
+
+    // Create a new file using default properties
+    auto file = H5Fcreate("ou_process.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+
+    { // create & write the dataset
+        hsize_t dimsf[] = {(hsize_t)path_count, (hsize_t)step_count};
+        auto space = H5Screate_simple(2, dimsf, NULL);
+        auto dataset = H5Dcreate(file, "/dataset", H5T_NATIVE_DOUBLE, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        H5Dwrite(dataset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ou_process.data());
+        H5Dclose(dataset);
+        H5Sclose(space);
+    }
+
+    // To make the file self-describing, we add some metadata in the form of attributes
+
+    { // store the time increment in a scalar (= singleton) 64-bit double attribute
+        auto dt_attr_space = H5Screate(H5S_SCALAR);
+        auto dt_attr = H5Acreate(file, "dt", H5T_NATIVE_DOUBLE, dt_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+        H5Awrite(dt_attr, H5T_NATIVE_DOUBLE, &dt);
+        H5Aclose(dt_attr);
+        H5Sclose(dt_attr_space);
+    }
+
+    { // store the reversion rate in a scalar (= singleton) 32-bit float attribute
+        auto theta_attr_space = H5Screate(H5S_SCALAR);
+        auto theta_attr = H5Acreate(file, "theta", H5T_NATIVE_FLOAT, theta_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+        H5Awrite(theta_attr, H5T_NATIVE_DOUBLE, &theta); // note: we write a double, but the attribute is a float -> implicit conversion
+        H5Aclose(theta_attr);
+        H5Sclose(theta_attr_space);
+    }
+
+    // Going crazy confuses the consumers of your data, so let's not do that. Here's what I mean
+
+    { // store the long-term mean in a scalar UTF-8 encoded string attribute
+        auto mu_str = to_string(mu);
+        auto mu_attr_space = H5Screate(H5S_SCALAR);
+        auto atype = H5Tcopy(H5T_C_S1);
+        H5Tset_size(atype, mu_str.length());
+        H5Tset_cset(atype, H5T_CSET_UTF8);
+        auto mu_attr = H5Acreate(file, "mu", atype, mu_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+        H5Awrite(mu_attr, atype, mu_str.c_str());
+        H5Aclose(mu_attr);
+        H5Tclose(atype);
+        H5Sclose(mu_attr_space);
+    }
+
+    { // go crazy and store the volatility in a 3D array attribute
+        auto sigma_attr_space = H5Screate(H5S_SIMPLE);
+        hsize_t adim[] = {1, 1, 1};
+        H5Sset_extent_simple(sigma_attr_space, 3, adim, NULL);
+        auto sigma_attr = H5Acreate(file, "sigma", H5T_NATIVE_DOUBLE, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+        H5Awrite(sigma_attr, H5T_NATIVE_DOUBLE, &sigma);
+        H5Aclose(sigma_attr);
+        H5Sclose(sigma_attr_space);
+    }
+
+    { // here's another crazy way to store the volatility in a scalar(!) 3D array attribute
+        auto sigma_attr_space = H5Screate(H5S_SCALAR);
+        hsize_t adim[] = {1, 1, 1};
+        auto atype = H5Tarray_create(H5T_NATIVE_DOUBLE, 3, adim);
+        auto sigma_attr = H5Acreate(file, "sigma1", atype, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+        auto sigma_ptr = &sigma;
+        H5Awrite(sigma_attr, atype, &sigma); // note: we write a double, but tell the library it's a 3D array -> implicit conversion
+        H5Aclose(sigma_attr);
+        H5Tclose(atype);
+        H5Sclose(sigma_attr_space);
+    }
     
-    double mu_mat[1][1][1];     /* Declaration of array attribute */
-    string mu_str;    /* Declaration of string attribute */
-
-    /* Initialize the dimension array */
-    dimsf[0] = paths;
-    dimsf[1] = steps;
-
-    /* Create a new file using default properties */
-    file = H5Fcreate("ou_process.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-
-    /* Create the dataspace for the dataset */
-    space = H5Screate_simple(2, dimsf, NULL);
-
-    /* Create the dataset with default properties */
-    dataset = H5Dcreate(file, "/dataset", H5T_NATIVE_DOUBLE, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-
-    /* Close the dataspace */
-    H5Sclose(space);
-
-    /* Write the dataset */
-    H5Dwrite(dataset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ou_process);
-    
-    /* Create attribute for dt, theta, mu, sigma using different types of attributes */
-    /* Attributes can be any type, whether it be user-defined, native, or even a n-dimensional array */
-    dt_attr_space = H5Screate(H5S_SCALAR); /* Create the dataspace for the attribute*/
-    dt_attr = H5Acreate2(file, "dt", H5T_NATIVE_DOUBLE, dt_attr_space, H5P_DEFAULT, H5P_DEFAULT); /* Create a double attribute */
-    H5Awrite(dt_attr, H5T_NATIVE_DOUBLE, &dt); /* Write the double attribute */
-
-    float f_theta = (float) theta; /* Convert theta to float */
-    theta_attr_space = H5Screate(H5S_SCALAR); /* Create the dataspace for the attribute*/
-    theta_attr = H5Acreate2(file, "theta", H5T_NATIVE_FLOAT, theta_attr_space, H5P_DEFAULT, H5P_DEFAULT); /* Create a float attribute */
-    H5Awrite(theta_attr, H5T_NATIVE_FLOAT, &f_theta); /* Write the float attribute */
-
-    mu_str = to_string(mu); /* Convert mu to a string */
-    mu_attr_space = H5Screate(H5S_SCALAR); /* Create the dataspace for the attribute*/
-    atype = H5Tcopy(H5T_C_S1); /* Create the datatype for this attribute */
-    H5Tset_size(atype, mu_str.length()); /* Set size */
-    H5Tset_cset(atype, H5T_CSET_UTF8); /* Set to UTF-8 */
-    mu_attr = H5Acreate2(file, "mu", atype, mu_attr_space, H5P_DEFAULT, H5P_DEFAULT); /* Create a string attribute */
-    H5Awrite(mu_attr, atype, mu_str.c_str()); /* Write the string attribute */
-
-    mu_mat[0][0][0] = sigma; /* Write sigma to the example 3D array */
-    sigma_attr_space = H5Screate(H5S_SIMPLE); /* Create the dataspace for the attribute*/
-    H5Sset_extent_simple(sigma_attr_space, 3, adim, NULL); /* Set dataspace dimensions */
-    sigma_attr = H5Acreate2(file, "sigma", H5T_NATIVE_DOUBLE, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT); /* Create matrix attribute */
-    H5Awrite(sigma_attr, H5T_NATIVE_DOUBLE, mu_mat); /* Write the 3D array attribute */
-
-    /* Close attributes */
-    H5Aclose(dt_attr);
-    H5Aclose(theta_attr);
-    H5Aclose(mu_attr);
-    H5Aclose(sigma_attr);
-
-    /* Close attribute and file dataspaces */
-    H5Sclose(dt_attr_space);
-    H5Sclose(theta_attr_space);
-    H5Sclose(mu_attr_space);
-    H5Sclose(sigma_attr_space);
-    H5Tclose(atype);
-
-    /* Close the dataset */
-    H5Dclose(dataset);
-
-    /* Close the file */
     H5Fclose(file);
 
     return 0;
