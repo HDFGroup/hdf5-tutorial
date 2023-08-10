@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 
     { // store the time increment in a scalar (= singleton) 64-bit double attribute
         auto dt_attr_space = H5Screate(H5S_SCALAR);
-        auto dt_attr = H5Acreate(file, "dt", H5T_NATIVE_DOUBLE, dt_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+        auto dt_attr = H5Acreate_by_name(file, "dataset", "dt", H5T_NATIVE_DOUBLE, dt_attr_space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         H5Awrite(dt_attr, H5T_NATIVE_DOUBLE, &dt);
         H5Aclose(dt_attr);
         H5Sclose(dt_attr_space);
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
 
     { // store the reversion rate in a scalar (= singleton) 32-bit float attribute
         auto theta_attr_space = H5Screate(H5S_SCALAR);
-        auto theta_attr = H5Acreate(file, "theta", H5T_NATIVE_FLOAT, theta_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+        auto theta_attr = H5Acreate_by_name(file, "dataset", "theta", H5T_NATIVE_FLOAT, theta_attr_space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         H5Awrite(theta_attr, H5T_NATIVE_DOUBLE, &theta); // note: we write a double, but the attribute is a float -> implicit conversion
         H5Aclose(theta_attr);
         H5Sclose(theta_attr_space);
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
         auto atype = H5Tcopy(H5T_C_S1);
         H5Tset_size(atype, mu_str.length());
         H5Tset_cset(atype, H5T_CSET_UTF8);
-        auto mu_attr = H5Acreate(file, "mu", atype, mu_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+        auto mu_attr = H5Acreate_by_name(file, "dataset", "mu", atype, mu_attr_space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         H5Awrite(mu_attr, atype, mu_str.c_str());
         H5Aclose(mu_attr);
         H5Tclose(atype);
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
         auto sigma_attr_space = H5Screate(H5S_SIMPLE);
         hsize_t adim[] = {1, 1, 1};
         H5Sset_extent_simple(sigma_attr_space, 3, adim, NULL);
-        auto sigma_attr = H5Acreate(file, "sigma", H5T_NATIVE_DOUBLE, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+        auto sigma_attr = H5Acreate_by_name(file, "dataset", "sigma", H5T_NATIVE_DOUBLE, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         H5Awrite(sigma_attr, H5T_NATIVE_DOUBLE, &sigma);
         H5Aclose(sigma_attr);
         H5Sclose(sigma_attr_space);
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
         auto sigma_attr_space = H5Screate(H5S_SCALAR);
         hsize_t adim[] = {1, 1, 1};
         auto atype = H5Tarray_create(H5T_NATIVE_DOUBLE, 3, adim);
-        auto sigma_attr = H5Acreate(file, "sigma1", atype, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT);
+        auto sigma_attr = H5Acreate_by_name(file, "dataset", "sigma1", atype, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         auto sigma_ptr = &sigma;
         H5Awrite(sigma_attr, atype, &sigma); // note: we write a double, but tell the library it's a 3D array -> implicit conversion
         H5Aclose(sigma_attr);
