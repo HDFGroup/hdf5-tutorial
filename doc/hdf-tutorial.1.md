@@ -16,7 +16,7 @@ The `offset` vector tracks the length of the sample paths, which are stored cons
 
 For each batch, the sample path generation is the same as in the previous tutorial.
 
-https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L119C1-L135C10
+https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L119-L135
 
 ## Storing the data
 
@@ -26,13 +26,13 @@ It is common to use two datasets to store the sample paths and their lengths. Th
 
 ### The `/paths` dataset
 
-https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L84C1-L92C21
+https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L84-L92
 
 Because of its indefinite size, the `/paths` dataset is created with the `H5S_UNLIMITED` flag. The `H5S_UNLIMITED` flag is used to create a dataspace of indefinite size. The `H5S_UNLIMITED` flag is used in conjunction with the `H5Dset_extent` function to extend the dataset dimensions as needed. Datasets of indefinite size must use chunked storage layout for incremental allocation in the HDF5 file. In this example, we use a chunk size of 1 MiB.
 
 ### The `/descr` dataset
 
-https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L94C1-L98C21
+https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L94-L98
 
 The `/descr` dataset is of fixed size. Its number of elements equals (total) the number of sample paths. To determine the length and elements of the `n`-ths path, we look up the `n`-th and `n+1`-th elements of the `/descr` dataset. The difference is the length of the `n`-th path. The actual samples of the `n`-th path are stored in the `/paths` dataset, starting at the `n`-th element.
 
@@ -40,7 +40,7 @@ The `/descr` dataset is of fixed size. Its number of elements equals (total) the
 
 Writing the `/descr` dataset is straightforward. Writing the `/paths` dataset is a little more interesting.
 
-https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L140C1-L154C34
+https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L140-L154
 
 It is done in several steps as follows:
 
@@ -56,7 +56,7 @@ The third step is crucial. Without it, the hyperslab selection would be incorrec
 
 As in the previous examples, we add attributes, albeit, this time, to the root group.
 
-https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L177C1-L190C26
+https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L177-L190
 
 ### `h5dump` output
 
