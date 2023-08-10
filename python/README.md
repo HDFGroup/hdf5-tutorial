@@ -1,4 +1,4 @@
-# HDFLab Tutorial - Python notebooks
+# HDFTutorial - Python notebooks
 
 The notebooks in this folder cover the essentials how to use HDF5 in a Python environment, either with h5py and the HDF5 Library or h5pyd and HSDS.
 
@@ -37,8 +37,14 @@ If you are planning to run any of the examples with HSDS, run the following in a
     mkdir ~/hsds_data  
     hsds --root_dir ~/hds_data
 
+In order to have the tutorial notebook's use HSDS, change the line `USE_H5PY = True` in the first cell
+to `USE_H5PY = False`.  All the notebooks will work with HSDS, but you'll see there can be some differences
+in the output.
+
 ## Open this folder in VS Studio
 
 In VS Studio, select "Open Folder" and go to this folder
 
 ## Running the notebooks
+
+TBD: basic howto for Jupyter
