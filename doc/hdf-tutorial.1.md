@@ -20,9 +20,9 @@ https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252
 
 ## Storing the data
 
-However we choose to map the sample paths to one or more HDF5 datasets, because the sample path lenghts are not know in advance, we must deal with the fact that certain dataset dimensions are not known in advance. We will use the `H5Dset_extent` function to extend the dataset dimensions as needed.
+However we choose to map the sample paths to one or more HDF5 datasets, because the sample path lenghts are not known in advance, we must deal with the fact that certain dataset dimensions are not known in advance. We will use the `H5Dset_extent` function to extend the dataset dimensions as needed.
 
-It is common to use two datasets to store the sample paths and their lengths. The first dataset stores the sample paths, and the second dataset stores their lengths as offsets into the first dataset. We call the first dataset `/paths` and the second dataset `/descr`. Both are one-dimensional. The `/paths` dataset is of variable length, and the `/descr` dataset is of fixed length. The `/descr` dataset is of fixed length because it is a vector of offsets, and the number of offsets equals the number of paths, and is known in advance.
+It is common to use two datasets to store the sample paths and their lengths. The first dataset stores the sample paths, and the second dataset stores their lengths as offsets into the first dataset. We call the first dataset `/paths` and the second dataset `/descr` (for *descr*iptors). Both are one-dimensional. The `/paths` dataset is of variable length, and the `/descr` dataset is of fixed length. The `/descr` dataset is of fixed length because it is a vector of offsets, and the number of offsets equals the number of paths, which is known in advance.
 
 ### The `/paths` dataset
 
@@ -42,7 +42,7 @@ Writing the `/descr` dataset is straightforward. Writing the `/paths` dataset is
 
 https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L140-L154
 
-It is done in several steps as follows:
+It is done in five steps as follows:
 
 1. Retrieve the current dataset dimension. (1D)
 2. Extend the dataset dimension by the paths in the batch.
@@ -50,11 +50,11 @@ It is done in several steps as follows:
 4. Select the hyperslab corrsponding to the batch.
 5. Write the batch to the hyperslab.
 
-The third step is crucial. Without it, the hyperslab selection would be incorrect. The hyperslab selection is relative to the current dataset dimension, not the original dataset dimension. The original dataset dimension is the dimension after the previous batch. The dataset dimension is updated as a side effect by the `H5Dset_extent` function.
+The third step is crucial. Without it, the hyperslab selection would be incorrect. The hyperslab selection is relative to the updated dataset dimension, not the original dataset dimension. The original dataset dimension is the dimension after the previous batch. The dataset dimension is updated as a side effect by the `H5Dset_extent` function.
 
 ### Adding attributes
 
-As in the previous examples, we add attributes, albeit, this time, to the root group.
+As in the previous examples, we add attributes, albeit, this time, to the root group. (And no weird typing or shaping this time!)
 
 https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L177-L190
 
