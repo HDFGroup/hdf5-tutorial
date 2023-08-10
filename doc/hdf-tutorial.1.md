@@ -10,7 +10,7 @@ Parsing the arguments is the same as in the previous tutorial. The only differen
 
 For each batch, we maintain two vectors to track the sample paths and their lengths.
 
-https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L105C1-L107C34
+https://github.com/HDFGroup/hdf5-tutorial/blob/07eb4b4035aedcec0fcde14f6f673c252f132a9b/hdf-tutorial.1.cpp#L105-L107
 
 The `offset` vector tracks the length of the sample paths, which are stored consecutively in `ou_process`.
 
