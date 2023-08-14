@@ -12,8 +12,48 @@
 
 using namespace std;
 
+void partition_work(int rank, int N, int nranks, size_t &start, size_t &stop) {
+
+  size_t count = N / nranks;
+  size_t remainder = N % nranks;
+
+  if (rank < remainder) {
+    // The first 'remainder' ranks get 'count + 1' tasks each
+    start = rank * (count + 1);
+    stop = start + count;
+  } else {
+    // The remaining 'nranks - remainder' ranks get 'count' task each
+    start = rank * count + remainder;
+    stop = start + (count - 1);
+  }
+
+}
+
 int main(int argc, char *argv[])
 {
+    // <ALTERNATIVE>:: The standard MPI IO File Driver only requires:
+    //
+    // MPI_Init(&argc, &argv);
+    //
+    // However, the subfiling VFD requires MPI_Init_thread with MPI_THREAD_MULTIPLE
+
+    int mpi_thread_required = MPI_THREAD_MULTIPLE;
+    int mpi_thread_provided = 0;
+
+    MPI_Init_thread(&argc, &argv, mpi_thread_required, &mpi_thread_provided);
+    if (mpi_thread_provided < mpi_thread_required) {
+      cout << "MPI_THREAD_MULTIPLE not supported" << endl;
+      MPI_Abort(MPI_COMM_WORLD, -1);
+    }
+
+    // Get the number of processes
+    int nprocs;
+    MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
+
+    // Get the rank of the process
+    int myid;
+    MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+
     // Create a map to store user inputs using the format key=value
     map<string, string> args;
 
@@ -37,6 +77,7 @@ int main(int argc, char *argv[])
     double theta = 1.0; // rate of reversion to the mean
     double mu = 0.0;    // long-term mean of the process
     double sigma = 0.1; // volatility of the process
+    bool subfiling = false;  // enable subfiling
 
     { // Parse user inputs
         if (args.count("paths"))
@@ -68,24 +109,38 @@ int main(int argc, char *argv[])
             sigma = stod(args["sigma"]);
             assert(sigma > 0);
         }
+        if (args.count("subfiling"))
+        {
+            string subf = args["subfiling"];
+            if(subf.size() > 0)
+              if(subf.at(0) == 'T' | subf.at(0) == 't')
+                subfiling = true;
+        }
     }
 
+    if(myid == 0) {
     cout << "Running with parameters:"
          << " paths=" << path_count
          << " steps=" << step_count
          << " dt=" << dt
          << " theta=" << theta
          << " mu=" << mu
-         << " sigma=" << sigma << endl;
+         << " sigma=" << sigma
+         << " subfiling=" << boolalpha << subfiling << noboolalpha << endl;
+    }
 
-    vector<double> ou_process(path_count * step_count);
+    size_t start, stop;
+    partition_work(myid, path_count, nprocs, start, stop);
+    size_t path_count_loc = stop - start + 1;
+
+    vector<double> ou_process(path_count_loc * step_count);
 
     { // Populate an array according to the Ornstein-Uhlenbeck process
         random_device rd;
         mt19937 generator(rd());
         normal_distribution<double> dist(0.0, sqrt(dt));
 
-        for (auto i = 0; i < path_count; ++i)
+        for (auto i = 0; i < path_count_loc; ++i)
         {
             ou_process[i * step_count] = 0; /* Start at x = 0 */
             for (auto j = 1; j < step_count; ++j)
@@ -96,20 +151,53 @@ int main(int argc, char *argv[])
             }
         }
     }
+    // Use the Subfiling or MPI-IO driver
+    hid_t plist_id = H5Pcreate(H5P_FILE_ACCESS);
+
+    if(subfiling)
+      H5Pset_fapl_subfiling(plist_id, NULL);
+    else
+      H5Pset_fapl_mpio(plist_id, MPI_COMM_WORLD, MPI_INFO_NULL);
 
     // Write the sample paths to an HDF5 file using the HDF5 C-API!
     // There are fine HDF5 C++ APIs available, but this is not today's topic.
 
     // Create a new file using default properties
-    auto file = H5Fcreate("ou_process.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    auto file = H5Fcreate("ou_process.h5", H5F_ACC_TRUNC, H5P_DEFAULT, plist_id);
+    H5Pclose(plist_id);
 
     { // create & write the dataset
         hsize_t dimsf[] = {(hsize_t)path_count, (hsize_t)step_count};
-        auto space = H5Screate_simple(2, dimsf, NULL);
-        auto dataset = H5Dcreate(file, "/dataset", H5T_NATIVE_DOUBLE, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-        H5Dwrite(dataset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ou_process.data());
+        auto filespace = H5Screate_simple(2, dimsf, NULL);
+        auto dataset = H5Dcreate(file, "/dataset", H5T_NATIVE_DOUBLE, filespace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        //H5Sclose(space);
+
+        // Define, by rank, a dataset in memory and write it to a hyperslab in the file.
+        hsize_t count[2], offset[2];
+        count[0]  = path_count_loc;
+        count[1]  = step_count;
+        offset[0] = start;
+        offset[1] = 0;       
+
+        hid_t memspace = H5Screate_simple(2, count, NULL);
+
+        // Select hyperslab in the file.
+        //hid_t filespace = H5Dget_space(dataset);
+        H5Sselect_hyperslab(filespace, H5S_SELECT_SET, offset, NULL, count, NULL);
+
+        // <OPTIONAL> Create property list for collective dataset write.
+        plist_id = H5Pcreate(H5P_DATASET_XFER);
+        H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
+
+
+        H5Dwrite(dataset, H5T_NATIVE_DOUBLE, memspace, filespace, H5P_DEFAULT, ou_process.data());
+
+        // Close objects associated with parallel and hyperslabs
+        H5Sclose(filespace);
+        H5Sclose(memspace);
+        H5Pclose(plist_id);
+
         H5Dclose(dataset);
-        H5Sclose(space);
     }
 
     // To make the file self-describing, we add some metadata in the form of attributes
@@ -168,6 +256,8 @@ int main(int argc, char *argv[])
     }
     
     H5Fclose(file);
+
+    MPI_Finalize();
 
     return 0;
 }
