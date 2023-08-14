@@ -20,26 +20,40 @@ Let us look at the following lines of code to learn how to store some data in an
 
 https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L104-113
 
-We first create an array that specifies the dimensions of the dataspace that will hold the data we just generated in the previous step. Using `{(hsize_t)path_count, (hsize_t)step_count}`, we will name this array `dimsf` and use it in an upcoming step. 
+***
+
+https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L104
+
+We first create a file using `H5Fcreate("ou_process.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT)` called `file`, and we name it `"ou_process.h5"`. The `H5F` prefix lets us know that the method is file related. This file is created with the flag of `H5F_ACC_TRUNC`, which truncates the file, and if it already exists, erases all data previously stored in the file. This newly created file will be where everything -- including the dataset and attributes -- will be stored. It can also be created with a specific file creation property list and file access property list, but we've opted to use the defaults for those arguments.
 
 ***
 
-We then create a file using `H5Fcreate("ou_process.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT)` called `file`, and we name it `"ou_process.h5"`. The `H5F` prefix lets us know that the method is file related. This file is created with the flag of `H5F_ACC_TRUNC`, which truncates the file, and if it already exists, erases all data previously stored in the file. This newly created file will be where everything -- including the dataset and attributes -- will be stored. It can also be created with a specific file creation property list and file access property list, but we've opted to use the defaults for those arguments.
+https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L107
+
+We then create an array that specifies the dimensions of the dataspace that will hold the data we just generated in the previous step. Using `{(hsize_t)path_count, (hsize_t)step_count}`, we will name this array `dimsf` and use it in an upcoming step. 
 
 ***
+
+https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L108
 
 Next, we use `H5Screate_simple(2, dimsf, NULL)` to create a simple dataspace named `space`, and the `S` in the `H5S` prefix tells us that this method has to do with dataspaces. `space` is the dataspace that will hold our dataset. We create it with a rank of 2, and use the previously defined `dimsf`. We could have also creted an array to specify the max size for each dimension, but because we set it to `NULL`, it means that the maximum size is the same as `dimsf`. 
 
 ***
 
+https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L109C14-L109C14
+
 We use `H5Dcreate(file, "/dataset", H5T_NATIVE_DOUBLE, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT)` to create a dataset of type `H5T_NATIVE_DOUBLE` using `space` as the dataspace and link it to the file that we created earlier. The `D` in `H5D` create means that this method relates to datasets. As with creating the file earlier, we could also specify a link creation property list, dataset cretaion property list, or a dataset access property list, but we are using the defaults for those arguments.
 
 ***
+
+https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L110 
 
 We will use `H5Dwrite(dataset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ou_process.data())` to write from a buffer, `ou_process.data()`, of type `H5T_NATIVE_DOUBLE` to `dataset`. The input of `H5S_ALL` is used in place of an identifier for the memory dataspace, which means that the entire file dataspace will be selected for this write. `H5S_ALL` is used again as the identifier of the dataset's dataspace in the file, which means that the file dataspace is used for the memory dataspace, and the entire file dataspace will be selected as well. We could have also specified a dataset transfer property list, but we have left that as `H5P_DEFAULT` again.
 
 ***
  
+https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L111-L112
+
 Lastly, we will use `H5Dclose(dataset)` and `H5Sclose(space)` to close `dataset` and `file`.
 
 ## Creating some attributes
