@@ -18,7 +18,7 @@ Using the Ornstein-Uhlenbeck process, with `path_count` being the number of path
 
 Let us look at the following lines of code to learn how to store some data in an HDF5 file. 
 
-https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L104C6-L113C6
+https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L104-L113
 
 ***
 
@@ -40,7 +40,7 @@ Next, we use `H5Screate_simple(2, dimsf, NULL)` to create a simple dataspace nam
 
 ***
 
-https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L109C14-L109C14
+https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L109
 
 We use `H5Dcreate(file, "/dataset", H5T_NATIVE_DOUBLE, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT)` to create a dataset of type `H5T_NATIVE_DOUBLE` using `space` as the dataspace and link it to the file that we created earlier. The `D` in `H5D` create means that this method relates to datasets. As with creating the file earlier, we could also specify a link creation property list, dataset cretaion property list, or a dataset access property list, but we are using the defaults for those arguments.
 
@@ -94,6 +94,6 @@ We can first create a simple attribute dataspace `sigma_attr_space` and define a
 
 Alteratively, we can store the volatility in a scalar 3D array attribute.
 
-https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L158-L18
+https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L158-L168
 
 This time, we create a scalar attribute dataspace `sigma_attr_space` and define a type `atype` using `H5Tarray_create(H5T_NATIVE_DOUBLE, 3, adim)`. This time, when we write the attribute using `H5Acreate_by_name(file, "dataset", "sigma1", atype, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT)`, we use the newly defined scalar datatype instead. 
