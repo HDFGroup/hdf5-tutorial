@@ -18,7 +18,7 @@ Using the Ornstein-Uhlenbeck process, with `path_count` being the number of path
 
 Let us look at the following lines of code to learn how to store some data in an HDF5 file. 
 
-https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L104-113
+https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L104C6-L113C6
 
 ***
 
