@@ -1,0 +1,12 @@
+name: hug2023
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - h5py
+  - notebook=6
+  - hdf5plugin
+  - pip:
+    - rise
