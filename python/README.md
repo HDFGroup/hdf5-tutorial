@@ -35,7 +35,7 @@ If you are planning to run any of the examples with HSDS, run the following in a
 
     conda activate hdf5tutorial
     mkdir ~/hsds_data  
-    hsds --root_dir ~/hds_data
+    hsds --root_dir ~/hsds_data
 
 In order to have the tutorial notebook's use HSDS, change the line `USE_H5PY = True` in the first cell
 to `USE_H5PY = False`.  All the notebooks will work with HSDS, but you'll see there can be some differences
