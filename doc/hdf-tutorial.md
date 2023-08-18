@@ -50,6 +50,8 @@ https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8d
 
 We will use `H5Dwrite(dataset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ou_process.data())` to write from a buffer, `ou_process.data()`, of type `H5T_NATIVE_DOUBLE` to `dataset`. The input of `H5S_ALL` is used in place of an identifier for the memory dataspace, which means that the entire file dataspace will be selected for this write. `H5S_ALL` is used again as the identifier of the dataset's dataspace in the file, which means that the file dataspace is used for the memory dataspace, and the entire file dataspace will be selected as well. We could have also specified a dataset transfer property list, but we have left that as `H5P_DEFAULT` again.
 
+You can pass a C-style 2-dimensional array (and anything laid out in that fashion in memory) to `H5Dwrite`, and in fact by passing a 2-D dataspace that's what you're telling HDF the buffer is.
+
 ***
  
 https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L111-L112
@@ -97,3 +99,5 @@ Alteratively, we can store the volatility in a scalar 3D array attribute.
 https://github.com/HDFGroup/hdf5-tutorial/blob/f8c8873079892b552fe8a0ca79e41df8df3beeb7/hdf-tutorial.cpp#L158-L168
 
 This time, we create a scalar attribute dataspace `sigma_attr_space` and define a type `atype` using `H5Tarray_create(H5T_NATIVE_DOUBLE, 3, adim)`. This time, when we write the attribute using `H5Acreate_by_name(file, "dataset", "sigma1", atype, sigma_attr_space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT)`, we use the newly defined scalar datatype instead. 
+
+Something to note: when creating the attributes, there's nothing special about `H5Screate(H5S_SIMPLE)` then `H5Sset_extent_simple()` vs just `H5Screate_simple()`. 
