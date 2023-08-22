@@ -84,18 +84,21 @@ int main(int argc, char *argv[])
     // create the paths dataset
     hsize_t dimsf[] = {0, H5S_UNLIMITED};  // we cannot know the size of the paths dataset in advance
     auto space = H5Screate_simple(1, dimsf, &dimsf[1]);
+    auto lcpl = H5Pcreate(H5P_LINK_CREATE);
+    H5Pset_create_intermediate_group(lcpl, 1);
     auto dcpl = H5Pcreate(H5P_DATASET_CREATE);
     hsize_t cdims[] = {128 * 1024};
     H5Pset_chunk(dcpl, 1, cdims);
-    auto paths = H5Dcreate(file, "/paths", H5T_NATIVE_DOUBLE, space, H5P_DEFAULT, dcpl, H5P_DEFAULT);
+    auto paths = H5Dcreate(file, "/paths/data", H5T_NATIVE_DOUBLE, space, lcpl, dcpl, H5P_DEFAULT);
     H5Pclose(dcpl);
     H5Sclose(space);
 
     // create the descriptors (= offset into paths dataset)
     dimsf[0] = path_count;  // we know the size of the descriptors dataset in advance
     space = H5Screate_simple(1, dimsf, NULL);
-    auto descr = H5Dcreate(file, "/descr", H5T_NATIVE_HSIZE, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    auto descr = H5Dcreate(file, "/paths/descr", H5T_NATIVE_HSIZE, space, lcpl, H5P_DEFAULT, H5P_DEFAULT);
     H5Sclose(space);
+    H5Pclose(lcpl);
 
     random_device rd;
     mt19937 generator(rd());
@@ -175,16 +178,16 @@ int main(int argc, char *argv[])
 
     { // to make the file self-describing, we add some metadata in the form of attributes
         auto scalar = H5Screate(H5S_SCALAR);
-        auto dt_attr = H5Acreate(file, "dt", H5T_NATIVE_DOUBLE, scalar, H5P_DEFAULT, H5P_DEFAULT);
+        auto dt_attr = H5Acreate_by_name(file, "paths", "dt", H5T_NATIVE_DOUBLE, scalar, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         H5Awrite(dt_attr, H5T_NATIVE_DOUBLE, &dt);
         H5Aclose(dt_attr);
-        auto theta_attr = H5Acreate(file, "theta", H5T_NATIVE_DOUBLE, scalar, H5P_DEFAULT, H5P_DEFAULT);
+        auto theta_attr = H5Acreate_by_name(file, "paths", "theta", H5T_NATIVE_DOUBLE, scalar, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         H5Awrite(theta_attr, H5T_NATIVE_DOUBLE, &theta);
         H5Aclose(theta_attr);
-        auto mu_attr = H5Acreate(file, "mu", H5T_NATIVE_DOUBLE, scalar, H5P_DEFAULT, H5P_DEFAULT);
+        auto mu_attr = H5Acreate_by_name(file, "paths", "mu", H5T_NATIVE_DOUBLE, scalar, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         H5Awrite(mu_attr, H5T_NATIVE_DOUBLE, &mu);
         H5Aclose(mu_attr);
-        auto sigma_attr = H5Acreate(file, "sigma", H5T_NATIVE_DOUBLE, scalar, H5P_DEFAULT, H5P_DEFAULT);
+        auto sigma_attr = H5Acreate_by_name(file, "paths", "sigma", H5T_NATIVE_DOUBLE, scalar, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         H5Awrite(sigma_attr, H5T_NATIVE_DOUBLE, &sigma);
         H5Aclose(sigma_attr);
         H5Sclose(scalar);
