@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
             path_count = stoul(args["paths"]);
             assert(path_count > 0);
         }
-        if (args.count("steps"))
+        if (args.count("batch"))
         {
             batch_size = stoul(args["batch"]);
             assert(batch_size > 0);
