@@ -3,6 +3,7 @@
 // New challenge: The length of the paths is random, and we produce them in batches
 
 #include <cassert>
+#include <cfloat>
 #include <iostream>
 #include <map>
 #include <random>
@@ -62,11 +63,31 @@ int main(int argc, char *argv[])
     }
     
     auto path_count = program.get<size_t>("--paths");
+    if (path_count == 0) {
+        cout << "Number of paths must be greater than zero" << endl;
+        return 1;
+    }
     auto batch_size = program.get<size_t>("--batch");
+    if (batch_size == 0) {
+        cout << "Batch size must be greater than zero" << endl;
+        return 1;
+    }
     auto dt = program.get<double>("--dt");
+    if (dt < DBL_MIN) {
+        cout << "Time step must be greater than zero" << endl;
+        return 1;
+    }
     auto theta = program.get<double>("--theta");
+    if (theta < DBL_MIN) {
+        cout << "Reversion rate must be greater than zero" << endl;
+        return 1;
+    }
     auto mu = program.get<double>("--mu");
     auto sigma = program.get<double>("--sigma");
+    if (sigma < DBL_MIN) {
+        cout << "Volatility must be greater than zero" << endl;
+        return 1;
+    }
 
     cout << "Running with parameters:"
          << " paths=" << path_count

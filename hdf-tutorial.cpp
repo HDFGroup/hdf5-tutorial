@@ -2,6 +2,7 @@
 // Warning: This code is not meant to be used in production!
 
 #include <cassert>
+#include <cfloat>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -64,11 +65,31 @@ int main(int argc, char *argv[])
     
     auto format = program.get<string>("--format");
     auto path_count = program.get<size_t>("--paths");
+    if (path_count == 0) {
+        cout << "Number of paths must be greater than zero" << endl;
+        return 1;
+    }
     auto step_count = program.get<size_t>("--steps");
+    if (step_count == 0) {
+        cout << "Number of steps must be greater than zero" << endl;
+        return 1;
+    }
     auto dt = program.get<double>("--dt");
+    if (dt < DBL_MIN) {
+        cout << "Time step must be greater than zero" << endl;
+        return 1;
+    }
     auto theta = program.get<double>("--theta");
+    if (theta < DBL_MIN) {
+        cout << "Reversion rate must be greater than zero" << endl;
+        return 1;
+    }
     auto mu = program.get<double>("--mu");
     auto sigma = program.get<double>("--sigma");
+    if (sigma < DBL_MIN) {
+        cout << "Volatility must be greater than zero" << endl;
+        return 1;
+    }
 
     cout << "Running with parameters:"
          << " paths=" << path_count
