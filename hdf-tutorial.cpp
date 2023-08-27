@@ -2,6 +2,7 @@
 // Warning: This code is not meant to be used in production!
 
 #include <cassert>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -9,73 +10,65 @@
 #include <string>
 #include <vector>
 
+#include <argparse/argparse.hpp>
 #include "hdf5.h"
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    // Create a map to store user inputs using the format key=value
-    map<string, string> args;
+    argparse::ArgumentParser program("hdf-tutorial");
 
-    for (auto i = 1; i < argc; i++)
-    {
-        string arg = argv[i];
-        size_t pos = arg.find('=');
-        if (pos == string::npos)
-        {
-            continue;
-        }
-        string key = arg.substr(0, pos);
-        string value = arg.substr(pos + 1);
-        args[key] = value;
+    program.add_argument("-f", "--format")
+    .help("selects output format")
+    .default_value(string{"hdf5"});
+
+    program.add_argument("-p", "--paths")
+    .help("chooses the numnber of paths")
+    .default_value(size_t{100})
+    .scan<'u', size_t>();
+
+    program.add_argument("-s", "--steps")
+    .help("chooses the number of steps")
+    .default_value(size_t{1000})
+    .scan<'u', size_t>();
+
+    program.add_argument("-d", "--dt")
+    .help("chooses the time step")
+    .default_value(double{0.01})
+    .scan<'f', double>();
+
+    program.add_argument("-t", "--theta")
+    .help("chooses the rate of reversion to the mean")
+    .default_value(double{1.0})
+    .scan<'f', double>();
+
+    program.add_argument("-m", "--mu")
+    .help("chooses the long-term mean of the process")
+    .default_value(double{0.0})
+    .scan<'f', double>();
+
+    program.add_argument("-g", "--sigma")
+    .help("chooses the volatility of the process")
+    .default_value(double{0.1})
+    .scan<'f', double>();
+    
+    try {
+        program.parse_args(argc, argv);
     }
-
-    // Parameter defaults
-    string format = "hdf5";
-    size_t path_count = 100;
-    size_t step_count = 1000;
-    double dt = 0.01;   // time step
-    double theta = 1.0; // rate of reversion to the mean
-    double mu = 0.0;    // long-term mean of the process
-    double sigma = 0.1; // volatility of the process
-
-    { // Parse user inputs
-        if (args.count("format"))
-        {
-            format = string(args["format"]);
-            assert(format == "hdf5" || format == "txt" || format == "bin");
-        }
-        if (args.count("paths"))
-        {
-            path_count = stoul(args["paths"]);
-            assert(path_count > 0);
-        }
-        if (args.count("steps"))
-        {
-            step_count = stoul(args["steps"]);
-            assert(step_count > 0);
-        }
-        if (args.count("dt"))
-        {
-            dt = stod(args["dt"]);
-            assert(dt > 0);
-        }
-        if (args.count("theta"))
-        {
-            theta = stod(args["theta"]);
-            assert(theta > 0);
-        }
-        if (args.count("mu"))
-        {
-            mu = stod(args["mu"]);
-        }
-        if (args.count("sigma"))
-        {
-            sigma = stod(args["sigma"]);
-            assert(sigma > 0);
-        }
+    catch(const std::exception& e) {
+        std::cerr << e.what() << '\n';
+        std::cerr << program;
+        std::exit(1);
     }
+    
+    auto format = program.get<string>("--format");
+    auto path_count = program.get<size_t>("--paths");
+    auto step_count = program.get<size_t>("--steps");
+    auto dt = program.get<double>("--dt");
+    auto theta = program.get<double>("--theta");
+    auto mu = program.get<double>("--mu");
+    auto sigma = program.get<double>("--sigma");
 
     cout << "Running with parameters:"
          << " paths=" << path_count
@@ -207,7 +200,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        cout << "Unknown format: " << format << endl;
+        cout << "Unknown format: \"" << format << "\" : supported [hdf5, bin, txt]" << endl;
         return 1;
     }
 
