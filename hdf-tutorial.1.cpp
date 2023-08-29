@@ -160,6 +160,7 @@ int main(int argc, char *argv[])
         { // write the paths and path descriptors
             auto path_space = H5Dget_space(paths);  // pretend we didn't count along the way
             hsize_t path_elem_count = (hsize_t) H5Sget_simple_extent_npoints(path_space);  // 1D dataset
+            H5Sclose(path_space);
             hsize_t path_dims[] = {path_elem_count + (hsize_t) ou_process.size()};
             H5Dset_extent(paths, path_dims);   // resize the dataset/extend the dataspace
 
