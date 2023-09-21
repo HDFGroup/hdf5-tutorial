@@ -45,10 +45,10 @@ If you are planning to run any of the examples with HSDS, run the following in a
 Back in your original terminal, configure your credentials for accessing HSDS.  
 Run `hsconfigure` and accept the default values at each prompt:
 
-endpoint: http://localhost:5101
-username: your computer login name
-password: your computer login name
-api_key: none (just press enter)
+    endpoint: http://localhost:5101
+    username: your computer login name
+    password: your computer login name
+    api_key: none (just press enter)
 
 Press `Y` to save these changes. The file `.hscfg` will be created in your home directory with this information.
 
