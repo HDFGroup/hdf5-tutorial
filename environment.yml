@@ -1,0 +1,15 @@
+name: hdf5-tutorial
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - jupyter
+  - h5py
+  - hdf5
+  - hdf5plugin
+  - matplotlib
+  - notebook
+  - pip
+  - pip:
+    - h5pyd
+    - rise
