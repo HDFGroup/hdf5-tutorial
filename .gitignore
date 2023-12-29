@@ -1,3 +1,11 @@
+# Ignore
 .DS_Store
-/h5py-tutorial/h5py_tutorial_ou_process.h5
-/h5py-tutorial/.ipynb_checkpoints/h5py-tutorial-checkpoint.ipynb
+/build/*
+/ou_process.*
+/*.h5
+/.ipynb_checkpoints/*
+/python/*.h5
+
+# Allow
+!/ou_process.h5
+!/build/noop.txt

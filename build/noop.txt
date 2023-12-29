@@ -1,0 +1,1 @@
+Make sure the build directory sticks around.
