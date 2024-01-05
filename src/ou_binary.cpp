@@ -8,13 +8,8 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    size_t path_count, step_count;
-    double dt, theta, mu, sigma;
-    
-    argparse::ArgumentParser program("ou_binary");
-    set_options(program);
-    program.parse_args(argc, argv);
-    get_arguments(program, path_count, step_count, dt, theta, mu, sigma);
+    const size_t path_count = 100, step_count = 1000;
+    const double dt = 0.01, theta = 1.0, mu = 0.0, sigma = 0.1;
 
     cout << "Running with parameters:"
          << " paths=" << path_count << " steps=" << step_count
