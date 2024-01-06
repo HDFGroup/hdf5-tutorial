@@ -2,6 +2,8 @@
 
 <img src="img/HDF5.png" alt="HDF5 logo" title="HDF5 logo" />
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/HDFGroup/hdf5-tutorial)
+
 *HDF5 is a framework for sharing data.* Its purpose is to frame data so that it can be shared and understood on its own because it speaks for itself; it is *self-describing*. 'Sharing' can mean different things, and there are different ways to achieve this. The framework includes a data model and implementations such as the __[HDF5 library and file format](https://github.com/HDFGroup/hdf5)__ or the __[Highly Scalable Data Service (HSDS)](https://github.com/HDFGroup/hsds)__, and several fantastic community contributions, such as __[`h5py`](https://www.h5py.org/)__, __[HDFql](https://www.hdfql.com/)__, __[`rhdf5`](https://bioconductor.org/packages/release/bioc/html/rhdf5.html)__, or __[H5Web](https://h5web.panosc.eu/)__.
 
 This is a tutorial for new and intermediate HDF5 users. The tutorial is
