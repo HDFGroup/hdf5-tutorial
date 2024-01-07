@@ -1,4 +1,5 @@
 #include "parse_arguments.hpp"
+#include "docstring.hpp"
 #include "ou_sampler.hpp"
 
 #include "hdf5.h"
@@ -24,6 +25,8 @@ int main(int argc, char *argv[])
 
     auto file = H5Fcreate("ou_process.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
+    add_docstring(file, ".", "source", "https://github.com/HDFGroup/hdf5-tutorial");
+
     { // create & write the dataset
         hsize_t dimsf[] = {(hsize_t)path_count, (hsize_t)step_count};
         auto space = H5Screate_simple(2, dimsf, NULL);
@@ -34,6 +37,11 @@ int main(int argc, char *argv[])
     }
 
     { // make the file self-describing by adding a few attributes to `dataset`
+        add_docstring(file, "dataset", "comment", "This dataset contains sample paths of an Ornstein-Uhlenbeck process.");
+        add_docstring(file, "dataset", "Wikipedia", "https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process");
+        add_docstring(file, "dataset", "rows", "path");
+        add_docstring(file, "dataset", "columns", "time");
+        
         auto scalar = H5Screate(H5S_SCALAR);
         auto acpl = H5Pcreate(H5P_ATTRIBUTE_CREATE);
         H5Pset_char_encoding(acpl, H5T_CSET_UTF8);
