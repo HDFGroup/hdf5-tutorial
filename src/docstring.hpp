@@ -8,8 +8,8 @@
 extern void add_docstring
 (
     hid_t&             loc,
-    const std::string& rel,
+    const std::string& name,
     const std::string& key,
-    const std::string& val);
+    const std::string& value);
 
 #endif
