@@ -18,7 +18,10 @@ The notebooks in this tutorial are:
 4. __[Variation 2](./03-Variation2.ipynb)__ - MPI-parallel HDF5
 5. __[Python Bliss](./04-Python-Bliss.ipynb)__ - Where most HDF5 users will spend their time
 
-This tutorial is intended to be executed in a Web browser without installing any software. To this end, this repository comes with a prebuild __[GitHub Codespaces](https://github.com/features/codespaces)__ configuration. Launch a Codespaces environment by clicking the banner __["Open in GitHub Codespaces"](https://codespaces.new/HDFGroup/hdf5-tutorial)__ and start evaluating the Jupyter notebooks.
+This tutorial is intended to be executed in a Web browser without installing any software. To this end, this repository comes with a prebuild __[GitHub Codespaces](https://github.com/features/codespaces)__ configuration. Launch a Codespaces environment by clicking the banner __["Open in GitHub Codespaces"](https://codespaces.new/HDFGroup/hdf5-tutorial)__ and start evaluating the Jupyter notebooks (by placing the cursor into a code cell and pressing `Ctrl+Enter` or `Shift+Enter`). When prompted for a Python kernel, select
+```
+hdf5-tutorial (Python 3.12.1) /opt/conda/envs/hdf5-tutorial/python
+```
 
 You are welcome to clone this repository and set up your local environment. *Notice that a few settings are specific to the Codespaces configuration and will need adjusting in a custom environment.* We recommend you review [`environment.yml`](./environment.yml) for Python package dependencies, and the files in [`.devcontainer`](./.devcontainer) for additional dependencies.
 
