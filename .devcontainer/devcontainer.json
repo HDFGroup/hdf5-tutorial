@@ -9,16 +9,11 @@
     "vscode": {
       "extensions": [
           "ms-python.python",
-          "ms-python.vscode-pylance",
           "ms-toolsai.jupyter",
-          "ms-toolsai.vscode-jupyter-slideshow",
-          "ms-vscode.cmake-tools",
-          "ms-vscode.cpptools-extension-pack",
           "h5web.vscode-h5web"
           ],
       "settings": {
-	      "python.defaultInterpreterPath": "/opt/conda/envs/hdf5-tutorial/python",
-        "terminal.integrated.shell.linux": "/bin/bash"
+	      "python.defaultInterpreterPath": "/opt/conda/envs/hdf5-tutorial/python"
       }
     }
   }
