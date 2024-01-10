@@ -10,10 +10,18 @@
       "extensions": [
           "ms-python.python",
           "ms-toolsai.jupyter",
-          "h5web.vscode-h5web"
+          "ms-toolsai.vscode-jupyter-slideshow",
+          "ms-vscode.cmake-tools",
+          "ms-vscode.cpptools-extension-pack",
+          "h5web.vscode-h5web",
+          "davidanson.vscode-markdownlint"
           ],
       "settings": {
-	      "python.defaultInterpreterPath": "/opt/conda/envs/hdf5-tutorial/python"
+        "C_Cpp.default.cppStandard": "c++17",
+        "C_Cpp.default.cStandard": "c99",
+	      "python.defaultInterpreterPath": "/opt/conda/envs/hdf5-tutorial/python",
+        "python.languageServer": "Default",
+        "terminal.integrated.shell.linux": "/bin/bash"
       }
     }
   }
