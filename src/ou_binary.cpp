@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int main(int argc, char *argv[])
+int main()
 {
     const size_t path_count = 100, step_count = 1000;
     const double dt = 0.01, theta = 1.0, mu = 0.0, sigma = 0.1;
