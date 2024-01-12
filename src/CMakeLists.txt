@@ -7,12 +7,14 @@
 #FetchContent_MakeAvailable(argparse)
 
 #find packages
-find_package(MPI REQUIRED)
+#find_package(MPI REQUIRED)
 find_package(HDF5 REQUIRED COMPONENTS C)
 
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 add_executable(hello hello.c)
+
+include_directories(${HDF5_INCLUDE_DIRS} "../include")
 
 add_executable(hello-hdf5 hello_hdf5.cpp)
 target_link_libraries(hello-hdf5 ${HDF5_C_LIBRARIES})
@@ -34,5 +36,4 @@ target_link_libraries(ou-hdf5.1 ${HDF5_C_LIBRARIES})
 #add_executable(ou-hdf5-mpi ou_hdf5_mpi.cpp parse_arguments.cpp parse_arguments2.cpp partitioner.cpp ou_sampler.cpp)
 #set_property(TARGET ou-hdf5-mpi PROPERTY CXX_STANDARD 17)
 #target_link_libraries(ou-hdf5-mpi PRIVATE HDF5 MPI::MPI_C)
-
-include_directories(${MPI_INCLUDE_PATH} ${HDF5_INCLUDE_DIRS} "../include")
+#include_directories(${MPI_INCLUDE_PATH} ${HDF5_INCLUDE_DIRS} "../include")
