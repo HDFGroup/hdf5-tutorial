@@ -1,7 +1,7 @@
-#include "parse_arguments.hpp"
 #include "ou_sampler.hpp"
 
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using namespace std;
