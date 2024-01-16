@@ -1,8 +1,8 @@
-#include "parse_arguments.hpp"
 #include "docstring.hpp"
 #include "ou_sampler.hpp"
 
 #include "hdf5.h"
+#include <iostream>
 #include <vector>
 
 using namespace std;
