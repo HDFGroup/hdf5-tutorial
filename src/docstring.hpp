@@ -10,6 +10,7 @@ extern void add_docstring
     hid_t&             loc,
     const std::string& name,
     const std::string& key,
-    const std::string& value);
+    const std::string& value
+);
 
 #endif
