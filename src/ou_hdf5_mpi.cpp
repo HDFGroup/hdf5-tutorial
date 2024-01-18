@@ -41,7 +41,11 @@ int main(int argc, char *argv[])
 #endif    
 
     argparse::ArgumentParser program("ou_hdf5_mpi");
+#ifdef H5_HAVE_SUBFILING_VFD
+    set_options2(program);
+#else
     set_options(program);
+#endif
     program.parse_args(argc, argv);
 #ifdef H5_HAVE_SUBFILING_VFD
     get_arguments2(program, path_count, step_count, dt, theta, mu, sigma, subfiling);

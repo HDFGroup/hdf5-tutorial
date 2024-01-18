@@ -10,9 +10,7 @@
       "extensions": [
           "ms-python.python",
           "ms-toolsai.jupyter",
-          "ms-toolsai.vscode-jupyter-slideshow",
-          "ms-vscode.cmake-tools",
-          "ms-vscode.cpptools-extension-pack",
+          "ms-vscode.cpptools",
           "h5web.vscode-h5web",
           "davidanson.vscode-markdownlint"
           ],
