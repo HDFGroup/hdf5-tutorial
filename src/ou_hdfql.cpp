@@ -28,7 +28,7 @@ int main()
     HDFql::execute("CREATE TRUNCATE FILE ou_hdfql.h5");
     HDFql::execute("CREATE ATTRIBUTE ou_hdfql.h5 source AS VARCHAR VALUES(\"https://github.com/HDFGroup/hdf5-tutorial\")");
 
-    std::ostringstream query;
+    ostringstream query;
     HDFql::execute(sstr("CREATE DATASET ou_hdfql.h5 \"dataset\" AS DOUBLE(" << path_count << ", " << step_count << ")"));
 
     HDFql::variableRegister(ou_process.data());
