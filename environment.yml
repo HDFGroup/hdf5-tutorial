@@ -2,7 +2,7 @@ name: hdf5-tutorial
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python ==3.10
   - jupyter
   - h5py
   - hdf5
@@ -11,5 +11,6 @@ dependencies:
   - notebook
   - pip
   - pip:
+    - hsds
     - h5pyd
     - rise
