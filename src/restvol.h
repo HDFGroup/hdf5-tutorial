@@ -1,7 +1,7 @@
 #ifndef RESTVOL_H
 #define RESTVOL_H
 
-#define HSDS_FILENAME_PREFIX "/home/test_user1/"
+#define HSDS_FILENAME_PREFIX "/home/vscode/"
 
 #define FILENAME_BUFFER_SIZE 1024
 #define NUM_DATASETS 2
