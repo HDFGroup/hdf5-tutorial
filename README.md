@@ -17,8 +17,9 @@ The notebooks in this tutorial are:
 3. __[Variation 1](./02-Variation1.ipynb)__ - A slightly more complex variant of the problem
 4. __[Variation 2](./03-Variation2.ipynb)__ - MPI-parallel HDF5
 5. __[Python Bliss](./04-Python-Bliss.ipynb)__ - Where most HDF5 users will spend their time
-6. __[PureHDF](./10-PureHDF.ipynb)__ - How to tackle the model problem in C#
-7. __[HDFql](./11-HDFql.ipynb)__ - The easy way to manage HDF5 data
+6. __[HSDS](./05-HSDS.ipynb)__ - How to tackle the model problem with HDF5-as-a-Service
+7. __[PureHDF](./10-PureHDF.ipynb)__ - How to tackle the model problem in C#
+8. __[HDFql](./11-HDFql.ipynb)__ - The easy way to manage HDF5 data
 
 This tutorial is intended to be executed in a Web browser without installing any software. To this end, this repository comes with a prebuild __[GitHub Codespaces](https://github.com/features/codespaces)__ configuration. Launch a Codespaces environment by clicking the banner __["Open in GitHub Codespaces"](https://codespaces.new/HDFGroup/hdf5-tutorial)__ and start evaluating the Jupyter notebooks (by placing the cursor into a code cell and pressing `Ctrl+Enter` or `Shift+Enter`). When prompted for a Python kernel, select
 ```
