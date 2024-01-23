@@ -3,6 +3,7 @@
 /build/*
 /ou_process.*
 /*.h5
+/*.log
 /.ipynb_checkpoints/*
 /python/*.h5
 
