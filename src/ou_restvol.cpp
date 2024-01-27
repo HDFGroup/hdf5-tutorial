@@ -26,8 +26,8 @@ int main()
     H5rest_init();
     auto fapl = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_rest_vol(fapl);
-
     auto file = H5Fcreate("/home/vscode/ou_restvol.h5", H5F_ACC_TRUNC, H5P_DEFAULT, fapl);
+    H5Pclose(fapl);
 
     add_docstring(file, ".", "source", "https://github.com/HDFGroup/hdf5-tutorial");
 
@@ -64,7 +64,6 @@ int main()
         H5Sclose(scalar);
     }
 
-    H5Pclose(fapl);
     H5Fclose(file);
 
     H5rest_term();
