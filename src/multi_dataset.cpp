@@ -19,11 +19,13 @@ int main()
     hid_t file = H5Fcreate("/home/vscode/multi_dataset.h5", H5F_ACC_TRUNC, H5P_DEFAULT, fapl);
     H5Pclose(fapl);
     
-    vector<int> write_buf(NUM_DATASETS*NUM_INTEGERS);
-    int* write_data[NUM_DATASETS] = {&write_buf[0], &write_buf[NUM_INTEGERS]};
-
-    vector<int> read_buf(NUM_DATASETS*NUM_INTEGERS);
-    int* read_data[NUM_DATASETS] = {&read_buf[0], &read_buf[NUM_INTEGERS]};
+    vector<int> write_buf(NUM_DATASETS*NUM_INTEGERS), read_buf(NUM_DATASETS*NUM_INTEGERS);
+    int *write_data[NUM_DATASETS], *read_data[NUM_DATASETS];
+    for (size_t i = 0; i < NUM_DATASETS; ++i)
+    {
+        write_data[i] = &write_buf[i*NUM_INTEGERS];
+        read_data[i] = &read_buf[i*NUM_INTEGERS];
+    }
 
     hid_t dspace_ids[NUM_DATASETS], dset_ids[NUM_DATASETS], type_ids[NUM_DATASETS], sel_space_ids[NUM_DATASETS];
     
@@ -44,9 +46,9 @@ int main()
             write_data[i][j] = i * 10000 + j;
     }
 
-    H5Dwrite_multi(NUM_DATASETS, dset_ids, type_ids, sel_space_ids, sel_space_ids, H5P_DEFAULT, (const void **)write_data);
+    H5Dwrite_multi(NUM_DATASETS, dset_ids, type_ids, sel_space_ids, sel_space_ids, H5P_DEFAULT, (const void**)write_data);
 
-    H5Dread_multi(NUM_DATASETS, dset_ids, type_ids, sel_space_ids, sel_space_ids, H5P_DEFAULT, (void **)read_data);
+    H5Dread_multi(NUM_DATASETS, dset_ids, type_ids, sel_space_ids, sel_space_ids, H5P_DEFAULT, (void**) read_data);
 
     for (size_t i = 0; i < read_buf.size(); ++i)
     {
