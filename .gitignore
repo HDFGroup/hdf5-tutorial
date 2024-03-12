@@ -1,10 +1,11 @@
 # Ignore
 .DS_Store
+/.ipynb_checkpoints/*
 /build/*
+/h5py/*
 /ou_process.*
 /*.h5
 /*.log
-/.ipynb_checkpoints/*
 /python/*.h5
 
 # Allow
