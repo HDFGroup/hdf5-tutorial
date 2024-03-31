@@ -2,7 +2,7 @@ version: "2"
 services:
   head:
     image: hdfgroup/hsds:master
-    restart: ${RESTART_POLICY}
+    restart: on-failure
     mem_limit: ${HEAD_RAM}
     environment:
       - TARGET_SN_COUNT=${SN_CORES}
@@ -18,7 +18,7 @@ services:
 
   dn:
     image: hdfgroup/hsds
-    restart: ${RESTART_POLICY}
+    restart: on-failure
     mem_limit: ${DN_RAM}
     environment:
       - NODE_TYPE=dn
@@ -30,12 +30,11 @@ services:
       - head
     volumes:
       - ${ROOT_DIR}:/data
-      - ${PWD}/admin/config/:/config/
     links:
       - head
   sn:
     image: hdfgroup/hsds
-    restart: ${RESTART_POLICY}
+    restart: on-failure
     mem_limit: ${SN_RAM}
     environment:
       - SN_PORT=${SN_PORT}
@@ -49,6 +48,5 @@ services:
       - head
     volumes:
       - ${ROOT_DIR}:/data
-      - ${PWD}/admin/config/:/config/
     links:
       - head

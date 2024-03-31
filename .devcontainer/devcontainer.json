@@ -1,26 +1,22 @@
 {
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
   "name": "HDF5 Tutorial",
-  "build": {
-    "context": "..",
-    "dockerfile": "Dockerfile"
+  "hostRequirements": {
+    "cpus": 4
   },
-  "postCreateCommand": "conda init",
+  "waitFor": "onCreateCommand",
+  "updateContentCommand": "python3 -m pip install -r requirements.txt",
+  "postCreateCommand": "",
   "customizations": {
+    "codespaces": {
+      "openFiles": []
+    },
     "vscode": {
       "extensions": [
-          "ms-python.python",
-          "ms-toolsai.jupyter",
-          "ms-vscode.cpptools",
-          "h5web.vscode-h5web",
-          "davidanson.vscode-markdownlint"
-          ],
-      "settings": {
-        "C_Cpp.default.cppStandard": "c++17",
-        "C_Cpp.default.cStandard": "c99",
-	      "python.defaultInterpreterPath": "/opt/conda/envs/hdf5-tutorial/python",
-        "python.languageServer": "Default",
-        "terminal.integrated.shell.linux": "/bin/bash"
-      }
+        "ms-toolsai.jupyter",
+        "ms-python.python"
+      ]
     }
   }
 }
+
