@@ -17,7 +17,7 @@ services:
     restart: on-failure
     mem_limit: 512m
     environment:
-      - TARGET_SN_COUNT=4
+      - TARGET_SN_COUNT=1
       - TARGET_DN_COUNT=4
       - NODE_TYPE=head_node
       - ROOT_DIR=/data
@@ -26,6 +26,7 @@ services:
       - 5100
     volumes:
       - /home/codespace/hsds/data:/data
+      - /home/hsds/config/:/config/
   dn:
     image: hdfgroup/hsds:master
     restart: on-failure
@@ -40,6 +41,7 @@ services:
       - head
     volumes:
       - /home/codespace/hsds/data:/data
+      - /home/hsds/config/:/config/
     links:
       - head
   sn:
@@ -53,10 +55,11 @@ services:
       - BUCKET_NAME=hsdstest
       - HSDS_ENDPOINT=http://localhost:5101
     ports:
-      - 5101:5101
+      - 5101-5104:5101
     depends_on:
       - head
     volumes:
       - /home/codespace/hsds/data:/data
+      - /home/hsds/config/:/config/
     links:
       - head
