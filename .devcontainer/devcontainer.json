@@ -1,22 +1,29 @@
 {
   "name": "HDF5 Tutorial",
   "dockerComposeFile": "docker-compose.yaml",
-  "hostRequirements": {
-    "cpus": 4
-  },
-  "waitFor": "onCreateCommand",
-  "updateContentCommand": "python3 -m pip install -r requirements.txt",
-  "postCreateCommand": "",
+  "service": "app",
+	"workspaceFolder": "/workspace",
+	"forwardPorts": [5101],
+	"portsAttributes": {
+		"5101": {"label": "HSDS port", "onAutoForward": "silent"}
+	},
+  
   "customizations": {
-    "codespaces": {
-      "openFiles": []
-    },
     "vscode": {
       "extensions": [
-        "ms-toolsai.jupyter",
-        "ms-python.python"
-      ]
+          "ms-python.python",
+          "ms-toolsai.jupyter",
+          "ms-vscode.cpptools",
+          "h5web.vscode-h5web",
+          "davidanson.vscode-markdownlint"
+          ],
+      "settings": {
+        "C_Cpp.default.cppStandard": "c++17",
+        "C_Cpp.default.cStandard": "c99",
+	      "python.defaultInterpreterPath": "/opt/conda/envs/hdf5-tutorial/python",
+        "python.languageServer": "Default",
+        "terminal.integrated.shell.linux": "/bin/bash"
+      }
     }
   }
 }
-
