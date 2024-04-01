@@ -15,7 +15,7 @@ services:
     volumes:
       - /home/codespace/hsds/data:/data
   dn:
-    image: hdfgroup/hsds
+    image: hdfgroup/hsds:master
     restart: on-failure
     mem_limit: 1g
     environment:
@@ -31,11 +31,11 @@ services:
     links:
       - head
   sn:
-    image: hdfgroup/hsds
+    image: hdfgroup/hsds:master
     restart: on-failure
     mem_limit: 1g
     environment:
-      - SN_PORT=510
+      - SN_PORT=5101
       - NODE_TYPE=sn
       - ROOT_DIR=/data
       - BUCKET_NAME=hsdstest
