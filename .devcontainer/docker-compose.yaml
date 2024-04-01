@@ -29,8 +29,8 @@ services:
     ports:
       - 5100
     volumes:
-      - /home/codespace/hsds/data:/data
-      - /home/hsds/config/:/config/
+      - ../hsds/data:/data
+      - ../hsds/config/:/config/
   dn:
     image: hdfgroup/hsds:master
     restart: on-failure
@@ -44,8 +44,8 @@ services:
     depends_on:
       - head
     volumes:
-      - /home/codespace/hsds/data:/data
-      - /home/hsds/config/:/config/
+      - ../hsds/data:/data
+      - ../hsds/config/:/config/
     links:
       - head
   sn:
@@ -63,7 +63,7 @@ services:
     depends_on:
       - head
     volumes:
-      - /home/codespace/hsds/data:/data
-      - /home/hsds/config/:/config/
+      - ../hsds/data:/data
+      - ../hsds/config/:/config/
     links:
       - head
