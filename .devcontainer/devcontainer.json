@@ -1,6 +1,6 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
   "name": "HDF5 Tutorial",
+  "dockerComposeFile": "docker-compose.yaml",
   "hostRequirements": {
     "cpus": 4
   },
