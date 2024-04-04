@@ -13,4 +13,4 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
   build-essential cmake libtool-bin git less wget \
   libhdf5-dev libhdf5-mpi-dev hdf5-tools libyajl-dev python3-pip
 RUN conda install -n base h5py
-RUN pip3 install h5pyd, s3fs
+RUN pip3 install h5pyd s3fs
