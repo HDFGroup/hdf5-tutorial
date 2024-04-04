@@ -1,8 +1,9 @@
-log_level: DEBUG 
+log_level: ERROR 
 bucket_name: hsdstest
 server_name: HSDS for Github codespaces 
 chunk_mem_cache_size: 256m
 root_dir: /workspace/hsds/data
+default_public: True
 head_sleep_time: 60 # max sleep time between health checks for head node
 node_sleep_time: 60 # max sleep time between health checks for SN/DN nodes
 
