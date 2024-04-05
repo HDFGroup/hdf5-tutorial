@@ -7,7 +7,9 @@
 	"portsAttributes": {
 		"5101": {"label": "HSDS port", "onAutoForward": "silent"}
 	},
-  
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker": {}
+  },
   "customizations": {
     "vscode": {
       "extensions": [
