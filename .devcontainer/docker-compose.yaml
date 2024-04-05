@@ -59,7 +59,7 @@ services:
       - BUCKET_NAME=hsdstest
       - HSDS_ENDPOINT=http://localhost:5101
     ports:
-      - 5101-5104:5101
+      - 5101:5101
     depends_on:
       - head
     volumes:

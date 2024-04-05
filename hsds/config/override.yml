@@ -1,9 +1,13 @@
-log_level: ERROR 
-bucket_name: hsdstest
-server_name: HSDS for Github codespaces 
-chunk_mem_cache_size: 256m
-root_dir: /workspace/hsds/data
-default_public: True
+log_level: ERROR  # or DEBUG or INFO or WARNING
+bucket_name: hsdstest  # default bucket name
+server_name: HSDS for Github codespaces   # this is displayed by the hsinfo command
+chunk_mem_cache_size: 256m  # chunk_cache memory per DN container
+root_dir: /workspace/hsds/data  # this is where HSDS data files will be stored
+default_public: True  # New domains will be created as default read
+aws_region: us-west-2  # The majority of public data files are in us-west-2 
+aws_s3_gateway: http://s3.us-west-2.amazonaws.com/  # s3 gateway for us-west-2
+aws_s3_no_sign_request: True  # Set to False if setting aws_access_key_id and aws_secret_access_key here 
 head_sleep_time: 60 # max sleep time between health checks for head node
 node_sleep_time: 60 # max sleep time between health checks for SN/DN nodes
-
+aws_region: us-west-2 # (original was us-east-1)
+aws_s3_gateway: http://s3.us-west-2.amazonaws.com/ # (original was null)
