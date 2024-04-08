@@ -31,7 +31,7 @@ services:
     volumes:
       - ../hsds/data:/data
       - ../hsds/config/:/config/
-  dn:
+  dn1:
     image: hdfgroup/hsds:sha-ed38987
     restart: on-failure
     mem_limit: 1g
@@ -41,6 +41,57 @@ services:
       - BUCKET_NAME=hsdstest
     ports:
       - 6101
+    depends_on:
+      - head
+    volumes:
+      - ../hsds/data:/data
+      - ../hsds/config/:/config/
+    links:
+      - head
+  dn2:
+    image: hdfgroup/hsds:sha-ed38987
+    restart: on-failure
+    mem_limit: 1g
+    environment:
+      - NODE_TYPE=dn
+      - ROOT_DIR=/data
+      - BUCKET_NAME=hsdstest
+    ports:
+      - 6102
+    depends_on:
+      - head
+    volumes:
+      - ../hsds/data:/data
+      - ../hsds/config/:/config/
+    links:
+      - head
+  dn3:
+    image: hdfgroup/hsds:sha-ed38987
+    restart: on-failure
+    mem_limit: 1g
+    environment:
+      - NODE_TYPE=dn
+      - ROOT_DIR=/data
+      - BUCKET_NAME=hsdstest
+    ports:
+      - 6103
+    depends_on:
+      - head
+    volumes:
+      - ../hsds/data:/data
+      - ../hsds/config/:/config/
+    links:
+      - head
+  dn4:
+    image: hdfgroup/hsds:sha-ed38987
+    restart: on-failure
+    mem_limit: 1g
+    environment:
+      - NODE_TYPE=dn
+      - ROOT_DIR=/data
+      - BUCKET_NAME=hsdstest
+    ports:
+      - 6104
     depends_on:
       - head
     volumes:
