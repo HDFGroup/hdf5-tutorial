@@ -17,7 +17,7 @@ services:
     # Runs app on the same network as the SN container, allows "forwardPorts" in devcontainer.json function.
     network_mode: service:sn
   head:
-    image: hdfgroup/hsds:sha-ed38987
+    image: hdfgroup/hsds:master
     restart: on-failure
     mem_limit: 512m
     environment:
@@ -32,7 +32,7 @@ services:
       - ../hsds/data:/data
       - ../hsds/config/:/config/
   dn1:
-    image: hdfgroup/hsds:sha-ed38987
+    image: hdfgroup/hsds:master
     restart: on-failure
     mem_limit: 1g
     environment:
@@ -49,7 +49,7 @@ services:
     links:
       - head
   dn2:
-    image: hdfgroup/hsds:sha-ed38987
+    image: hdfgroup/hsds:master
     restart: on-failure
     mem_limit: 1g
     environment:
@@ -66,7 +66,7 @@ services:
     links:
       - head
   dn3:
-    image: hdfgroup/hsds:sha-ed38987
+    image: hdfgroup/hsds:master
     restart: on-failure
     mem_limit: 1g
     environment:
@@ -83,7 +83,7 @@ services:
     links:
       - head
   dn4:
-    image: hdfgroup/hsds:sha-ed38987
+    image: hdfgroup/hsds:master
     restart: on-failure
     mem_limit: 1g
     environment:
@@ -100,7 +100,7 @@ services:
     links:
       - head
   sn:
-    image: hdfgroup/hsds:sha-ed38987
+    image: hdfgroup/hsds:master
     restart: on-failure
     mem_limit: 1g
     environment:
