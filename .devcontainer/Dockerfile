@@ -11,4 +11,6 @@ RUN if [ -f "/tmp/conda-tmp/environment.yml" ]; then umask 0002 && /opt/conda/bi
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
   build-essential cmake libtool-bin git less wget \
-  libhdf5-dev libhdf5-mpi-dev hdf5-tools libyajl-dev
+  libhdf5-dev libhdf5-mpi-dev hdf5-tools libyajl-dev python3-pip
+RUN conda install -n base h5py matplotlib h5netcdf xarray
+RUN pip3 install h5pyd s3fs

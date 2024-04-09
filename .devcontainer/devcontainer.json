@@ -1,10 +1,16 @@
 {
   "name": "HDF5 Tutorial",
-  "build": {
-    "context": "..",
-    "dockerfile": "Dockerfile"
-  },
+  "dockerComposeFile": "docker-compose.yaml",
   "postCreateCommand": "conda init",
+  "service": "app",
+	"workspaceFolder": "/workspace",
+	"forwardPorts": [5101],
+	"portsAttributes": {
+		"5101": {"label": "HSDS port", "onAutoForward": "silent"}
+	},
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker": {}
+  },
   "customizations": {
     "vscode": {
       "extensions": [
