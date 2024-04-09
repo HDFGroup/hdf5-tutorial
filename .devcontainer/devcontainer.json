@@ -1,6 +1,7 @@
 {
   "name": "HDF5 Tutorial",
   "dockerComposeFile": "docker-compose.yaml",
+  "postCreateCommand": "conda init",
   "service": "app",
 	"workspaceFolder": "/workspace",
 	"forwardPorts": [5101],
