@@ -17,7 +17,7 @@
       "settings": {
         "C_Cpp.default.cppStandard": "c++17",
         "C_Cpp.default.cStandard": "c99",
-	      "python.defaultInterpreterPath": "/opt/conda/envs/hdf5-tutorial/python",
+	      "python.defaultInterpreterPath": "/opt/conda/envs/hdf5-tutorial/bin/python",
         "python.languageServer": "Default",
         "terminal.integrated.shell.linux": "/bin/bash"
       }
